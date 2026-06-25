@@ -3,16 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MRM Web</title>
+  <meta name="description" content="mormied - Cyber Security Analyst focused on malware analysis, threat research, reverse engineering, and defensive security." />
+  <meta name="theme-color" content="#07111f" />
+  <title>mormied | Cyber Security Analyst</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <main class="hero">
-    <p class="eyebrow">MRM Web</p>
-    <h1>Building something new.</h1>
-    <p>A personal website built from scratch and served through Cloudflare Workers.</p>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="site-bg" aria-hidden="true">
+    <div class="grid-layer"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+  </div>
+
+  <header class="site-header" data-header>
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="mormied home">
+        <span class="brand-mark">m</span>
+        <span>mormied</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
+        <span class="sr-only">Toggle navigation</span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-menu" id="nav-menu" data-nav-menu>
+        <a href="#about">About</a>
+        <a href="#focus">Focus</a>
+        <a href="#projects">Projects</a>
+        <a href="#notes">Notes</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Cyber Security Portfolio</p>
+        <h1 id="hero-title">mormied</h1>
+        <p class="hero-title">Cyber Security Analyst</p>
+        <p class="hero-subtitle">
+          Malware analysis, threat research, reverse engineering, detection engineering, and defensive security.
+        </p>
+        <div class="hero-actions" aria-label="Hero actions">
+          <a class="button primary" href="#projects">View Projects</a>
+          <a class="button secondary" href="#notes">Research Notes</a>
+          <a class="button ghost" href="#contact">Contact</a>
+        </div>
+      </div>
+
+      <aside class="terminal-card reveal" aria-label="Animated terminal introduction">
+        <div class="terminal-top">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="prompt">mormied@lab</span>:~$ whoami</p>
+          <p class="typed-line" data-typed="Cyber Security Analyst"></p>
+          <p><span class="prompt">mormied@lab</span>:~$ focus</p>
+          <p class="muted">malware_analysis | detection_engineering | threat_research</p>
+          <p><span class="prompt">mormied@lab</span>:~$ status</p>
+          <p class="status-line">building public research profile<span class="cursor">_</span></p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section shell" id="about" aria-labelledby="about-title">
+      <div class="section-heading reveal">
+        <p class="eyebrow">About</p>
+        <h2 id="about-title">Security-focused, curious, and building in public.</h2>
+      </div>
+      <div class="about-grid">
+        <article class="glass-panel reveal">
+          <p>
+            I am mormied, a Cyber Security Analyst interested in understanding how threats work, how defenders detect them, and how security tools can make investigations clearer.
+          </p>
+          <p>
+            My main areas of interest are malware analysis, detection engineering, threat intelligence, reverse engineering, and attacker behaviour. This site is a space for future writeups, tooling experiments, lab notes, and research as they develop.
+          </p>
+        </article>
+        <div class="signal-card reveal">
+          <span class="signal-dot"></span>
+          <p class="signal-label">Current mode</p>
+          <strong>Research profile in progress</strong>
+          <p>Upcoming writeups and lab notes will appear here as they are completed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="focus" aria-labelledby="focus-title">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Focus Areas</p>
+        <h2 id="focus-title">Where I am sharpening my skills.</h2>
+      </div>
+      <div class="card-grid focus-grid" data-focus-grid></div>
+    </section>
+
+    <section class="section shell" id="projects" aria-labelledby="projects-title">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Upcoming Projects</p>
+        <h2 id="projects-title">Planned work, labs, and writeups.</h2>
+        <p>
+          No rushed filler. These placeholders are designed to make future work easy to add when it is ready.
+        </p>
+      </div>
+      <div class="card-grid project-grid" data-project-grid></div>
+    </section>
+
+    <section class="section shell notes-section" id="notes" aria-labelledby="notes-title">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Research Notes</p>
+        <h2 id="notes-title">A home for short-form security thinking.</h2>
+      </div>
+      <div class="notes-list" data-notes-list></div>
+    </section>
+
+    <section class="section shell" id="contact" aria-labelledby="contact-title">
+      <div class="contact-panel reveal">
+        <div>
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">Open to security conversations, research, and collaboration.</h2>
+          <p>
+            Replace these placeholder links with your real profiles when you are ready.
+          </p>
+        </div>
+        <div class="contact-links" data-contact-links></div>
+      </div>
+    </section>
   </main>
 
+  <footer class="site-footer shell">
+    <p>mormied</p>
+    <p>Cyber Security Analyst - built for Cloudflare Workers.</p>
+  </footer>
+
+  <script src="/content.js"></script>
   <script src="/script.js"></script>
 </body>
 </html>
