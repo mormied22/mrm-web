@@ -91,10 +91,10 @@ Root directory: /
 The current Wrangler config uses:
 
 ```json
-"name": "mrm-web-workers"
+"name": "mrm-web"
 ```
 
-This matches the Cloudflare Worker shown in your dashboard. If you rename the Worker in Cloudflare, update `wrangler.json` to match.
+This should match the Cloudflare Worker name shown in your dashboard. If you rename the Worker in Cloudflare, update `wrangler.json` to match.
 
 ## Security notes
 

@@ -9,22 +9,22 @@ window.siteConfig = {
     {
       label: "GitHub",
       href: "https://github.com/mormied22",
-      detail: "Code and public notes"
+      detail: "github.com/mormied22"
     },
     {
       label: "LinkedIn",
-      href: "#",
-      detail: "Add your profile URL"
+      href: "https://www.linkedin.com/in/chase.morman",
+      detail: "linkedin.com/in/chase.morman"
     },
     {
       label: "Email",
-      href: "mailto:hello@example.com",
-      detail: "Replace with your address"
+      href: "mailto:mormied.tech@proton.me",
+      detail: "mormied.tech@proton.me"
     },
     {
       label: "TryHackMe",
-      href: "#",
-      detail: "Optional profile link"
+      href: "https://tryhackme.com/p/chase.morman",
+      detail: "tryhackme.com/p/chase.morman"
     }
   ],
   focusAreas: [
