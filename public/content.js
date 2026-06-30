@@ -77,6 +77,12 @@ window.siteConfig = {
   ],
   notes: [
     {
+      title: "Installing Microsoft Intune Portal on Debian 13",
+      date: "Lab note",
+      href: "/notes/intune-portal-debian-13.html",
+      text: "An unsupported lab workaround for patching the Linux installer locally so Debian 13 is treated as Ubuntu 24.04 noble."
+    },
+    {
       title: "Building a malware analysis workflow",
       date: "Draft",
       text: "Planned notes on repeatable triage, safe handling, snapshots, tooling, and reporting structure."

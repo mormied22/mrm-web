@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A lab write-up documenting an unsupported workaround for running the Microsoft Intune Portal installer on Debian 13 by treating it as Ubuntu 24.04 noble." />
+  <meta name="theme-color" content="#07111f" />
+  <title>Installing Microsoft Intune Portal on Debian 13 | mormied</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="site-bg" aria-hidden="true">
+    <div class="grid-layer"></div>
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+  </div>
+
+  <header class="site-header" data-header>
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="/" aria-label="mormied home">
+        <img class="brand-icon" src="/brand-mark.svg" alt="" aria-hidden="true" />
+        <span class="brand-name">mormied</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
+        <span class="sr-only">Toggle navigation</span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-menu" id="nav-menu" data-nav-menu>
+        <a href="/#about">About</a>
+        <a href="/#focus">Focus</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#notes">Notes</a>
+        <a href="/#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <article class="article-shell shell reveal">
+      <a class="back-link" href="/#notes">← Back to research notes</a>
+
+      <header class="article-header">
+        <p class="eyebrow">Lab Note · Linux / Intune</p>
+        <h1>Installing Microsoft Intune Portal on Debian 13 with a Local Installer Patch</h1>
+        <p class="article-summary">
+          A practical lab write-up documenting an unsupported workaround for patching the Microsoft Intune Portal Linux installer so Debian 13 is treated as Ubuntu 24.04 noble.
+        </p>
+        <div class="article-meta" aria-label="Article details">
+          <span>mormied</span>
+          <span>Debian 13</span>
+          <span>Unsupported workaround</span>
+        </div>
+      </header>
+
+      <div class="callout warning">
+        <strong>Important:</strong> This is an unsupported workaround. It may install successfully, but Microsoft support and Intune compliance behaviour may still depend on officially supported Linux distributions and desktop environments. Use this only after testing and only where you accept the risk.
+      </div>
+
+      <section class="article-content">
+        <h2>Overview</h2>
+        <p>Microsoft provides a Linux installer script for the Microsoft Intune Portal, which is designed to install the Intune app and its dependencies, including Microsoft Edge, on supported Linux distributions.</p>
+        <p>At the time of writing, Debian is not listed as a supported distribution. When running the official installer on Debian 13, the script exits early with an unsupported distribution error.</p>
+        <p>This write-up documents how to patch the installer locally so that it treats Debian 13 as Ubuntu 24.04, allowing the Microsoft Intune Portal installation to continue.</p>
+
+        <h2>Tested Environment</h2>
+        <ul>
+          <li>Debian 13 “Trixie”</li>
+          <li>amd64 / x86_64 architecture</li>
+          <li>KDE desktop environment</li>
+          <li>Microsoft Intune Portal installer from the official Microsoft shell-intune-samples GitHub repository</li>
+        </ul>
+
+        <h2>What This Workaround Does and Does Not Do</h2>
+        <p>This workaround only changes how the local installer script identifies the operating system during installation.</p>
+
+        <h3>It does:</h3>
+        <ul>
+          <li>Allow the installer script to pass its distribution check</li>
+          <li>Point the Microsoft package source at the Ubuntu 24.04 <code>noble</code> repository</li>
+          <li>Avoid modifying <code>/etc/os-release</code> globally</li>
+        </ul>
+
+        <h3>It does not:</h3>
+        <ul>
+          <li>Make Debian an officially supported Intune platform</li>
+          <li>Guarantee successful device compliance evaluation</li>
+          <li>Guarantee future package compatibility</li>
+          <li>Change Microsoft support boundaries</li>
+        </ul>
+
+        <h2>The Problem</h2>
+        <p>Running the Microsoft Intune Portal installer directly on Debian 13 fails because the script checks the distribution ID from <code>/etc/os-release</code>.</p>
+
+<pre><code>mkdir -p ~/intune-installer
+cd ~/intune-installer
+
+curl -L -o installer.sh "https://raw.githubusercontent.com/microsoft/shell-intune-samples/master/Linux/Intune%20Installer/installer.sh"
+chmod +x installer.sh
+
+./installer.sh --verbose</code></pre>
+
+        <p>On Debian 13, the installer returns:</p>
+
+<pre><code>Microsoft Intune Portal Installer
+
+Distro:       debian 13
+Architecture: amd64
+Channel:      prod
+Log file:     /home/&lt;user&gt;/intune-installer.log
+
+Error: debian is not a supported distribution. Supported: Ubuntu 22.04/24.04/26.04, RHEL/AlmaLinux 8/9/10</code></pre>
+
+        <p>The issue is not necessarily that the package cannot run, but that the installer script refuses to continue because Debian is not in its supported distribution list.</p>
+
+        <h2>Why Not Change <code>/etc/os-release</code>?</h2>
+        <p>One option would be to temporarily spoof the whole operating system by editing <code>/etc/os-release</code>.</p>
+        <p><strong>Do not do that.</strong></p>
+        <p>Changing <code>/etc/os-release</code> system-wide can confuse package managers, system tools, scripts, and support tooling. A safer approach is to patch only a local copy of the installer script.</p>
+        <p>This keeps the workaround limited to the Intune installer and avoids changing the identity of the operating system globally.</p>
+
+        <h2>Step 1: Download the Official Installer</h2>
+        <p>Create a working folder and download the Microsoft installer script:</p>
+
+<pre><code>mkdir -p ~/intune-installer
+cd ~/intune-installer
+
+curl -L -o installer.sh "https://raw.githubusercontent.com/microsoft/shell-intune-samples/master/Linux/Intune%20Installer/installer.sh"
+chmod +x installer.sh</code></pre>
+
+        <h2>Step 2: Create a Patched Copy</h2>
+        <p>Create a copy of the installer script and patch the distribution detection section. The goal is to make the script behave as though the system is Ubuntu 24.04 “noble”, without changing Debian itself.</p>
+
+<pre><code>cd ~/intune-installer
+
+cp installer.sh installer-debian-as-ubuntu.sh
+
+python3 - &lt;&lt;'PY'
+from pathlib import Path
+import re
+
+p = Path("installer-debian-as-ubuntu.sh")
+s = p.read_text()
+
+s2, n = re.subn(
+    r'DISTRO="\$ID"\s+RELEASE="\$VERSION_ID"',
+    'DISTRO="ubuntu"\nRELEASE="24.04"\nVERSION_CODENAME="noble"',
+    s,
+    count=1
+)
+
+if n != 1:
+    raise SystemExit("Could not patch installer. Pattern not found.")
+
+p.write_text(s2)
+PY
+
+chmod +x installer-debian-as-ubuntu.sh</code></pre>
+
+        <h2>Step 3: Confirm the Patch</h2>
+        <p>Check that the script now forces the Ubuntu values:</p>
+
+<pre><code>grep -nE 'DISTRO=|RELEASE=|VERSION_CODENAME|CODENAME=' installer-debian-as-ubuntu.sh | head -30</code></pre>
+
+        <p>Expected output should include:</p>
+
+<pre><code>DISTRO="ubuntu"
+RELEASE="24.04"
+VERSION_CODENAME="noble"</code></pre>
+
+        <p>This part is important. Debian 13 uses the codename <code>trixie</code>, but the Microsoft Ubuntu 24.04 repository expects <code>noble</code>.</p>
+        <p>If the installer uses <code>trixie</code> with the Ubuntu 24.04 Microsoft repository, <code>apt update</code> will fail with a 404 error.</p>
+
+        <h2>Step 4: Remove Any Broken Microsoft Repo Entry</h2>
+        <p>If you previously ran a partially patched installer, it may have created an invalid Microsoft repository entry using <code>trixie</code>.</p>
+        <p>Remove the Intune-related Microsoft repo files before trying again:</p>
+
+<pre><code>sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+sudo rm -f /etc/apt/sources.list.d/microsoft-insiders-fast.list</code></pre>
+
+        <p>Then check for any remaining bad entries:</p>
+
+<pre><code>grep -R "packages.microsoft.com/ubuntu/24.04/prod" /etc/apt/sources.list /etc/apt/sources.list.d/ 2&gt;/dev/null</code></pre>
+
+        <p>A broken entry would look similar to this:</p>
+
+<pre><code>https://packages.microsoft.com/ubuntu/24.04/prod trixie</code></pre>
+
+        <p>The correct Ubuntu 24.04 component is:</p>
+
+<pre><code>noble</code></pre>
+
+        <h2>Step 5: Run the Patched Installer</h2>
+        <p>Run the patched installer:</p>
+
+<pre><code>cd ~/intune-installer
+
+./installer-debian-as-ubuntu.sh --verbose</code></pre>
+
+        <p>The installer should now show something similar to:</p>
+
+<pre><code>Microsoft Intune Portal Installer
+
+Distro:       ubuntu 24.04
+Architecture: amd64
+Channel:      prod
+Log file:     /home/&lt;user&gt;/intune-installer.log</code></pre>
+
+        <p>It should then continue installing prerequisites, adding the Microsoft repositories, updating package information, and installing the Microsoft Intune Portal package.</p>
+
+        <h2>Step 6: Launch Microsoft Intune Portal</h2>
+        <p>Once installed, launch the Intune Portal from the application menu. You can also try launching it from the terminal:</p>
+
+<pre><code>intune-portal</code></pre>
+
+        <p>Sign in with the user’s work account and follow the enrolment process.</p>
+
+        <h2>Troubleshooting</h2>
+        <h3>Check the Installer Log</h3>
+        <p>If the install fails, check the log:</p>
+
+<pre><code>tail -n 100 ~/intune-installer.log</code></pre>
+
+        <p>For a longer view:</p>
+
+<pre><code>less ~/intune-installer.log</code></pre>
+
+        <h3>Check the Microsoft Repository</h3>
+        <p>If <code>apt update</code> fails, check the configured Microsoft repository:</p>
+
+<pre><code>grep -R "packages.microsoft.com" /etc/apt/sources.list /etc/apt/sources.list.d/ 2&gt;/dev/null</code></pre>
+
+        <p>For this workaround, the Intune Ubuntu repository should be using Ubuntu 24.04 and the <code>noble</code> component.</p>
+
+        <h3>Check Package Availability</h3>
+        <p>If the repo is correct but the install still fails, check whether the required packages are available:</p>
+
+<pre><code>apt-cache policy intune-portal microsoft-edge-stable</code></pre>
+
+        <p>You can also check for common dependency issues:</p>
+
+<pre><code>apt-cache policy libwebkit2gtk-4.0-37 libjavascriptcoregtk-4.0-18</code></pre>
+
+        <p>If dependencies are unavailable, do not add full Ubuntu base repositories to Debian. Mixing Debian and Ubuntu system repositories can break package management and leave the machine in a difficult-to-recover state.</p>
+
+        <h3>Remove the Intune Portal</h3>
+        <p>If you need to remove the installed package:</p>
+
+<pre><code>sudo apt remove intune-portal</code></pre>
+
+        <p>To fully purge the package:</p>
+
+<pre><code>sudo apt purge intune-portal</code></pre>
+
+        <p>You can also remove the Microsoft repository files added by the installer if they are no longer required.</p>
+
+        <h2>Important Notes</h2>
+        <p>This method only patches the installer script. It does not make Debian an officially supported Microsoft Intune Linux platform.</p>
+        <p>Administrators should be aware of the following:</p>
+        <ul>
+          <li>Microsoft may not support this configuration.</li>
+          <li>Intune compliance results may not behave the same as on officially supported Linux distributions.</li>
+          <li>Future changes to the installer script may break this patch.</li>
+          <li>Future package dependency changes may prevent this from working.</li>
+          <li>This should be tested before being used on any production device.</li>
+        </ul>
+        <p>The safest supported approach is still to use a supported Linux distribution.</p>
+
+        <h2>Summary</h2>
+        <p>The Microsoft Intune Portal installer blocks Debian because it is not listed as a supported distribution. Rather than modifying <code>/etc/os-release</code>, a safer workaround is to patch a local copy of the installer so that it treats Debian 13 as Ubuntu 24.04 “noble”.</p>
+        <p>The key part of the workaround is forcing:</p>
+
+<pre><code>DISTRO="ubuntu"
+RELEASE="24.04"
+VERSION_CODENAME="noble"</code></pre>
+
+        <p>This allows the installer to add the correct Microsoft Ubuntu 24.04 repository and continue with the Intune Portal installation.</p>
+        <p>This is useful for lab environments, testing, or edge cases where Debian is required, but it should be clearly documented as unsupported.</p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer shell">
+    <p>mormied</p>
+    <p>© 2026 MRM. All rights reserved.</p>
+  </footer>
+
+  <script src="/content.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -21,6 +21,8 @@ function escapeHtml(value) {
 }
 
 function renderFocusAreas() {
+  if (!selectors.focusGrid || !config.focusAreas) return;
+
   selectors.focusGrid.innerHTML = config.focusAreas
     .map((item) => `
       <article class="focus-card reveal">
@@ -33,6 +35,8 @@ function renderFocusAreas() {
 }
 
 function renderProjects() {
+  if (!selectors.projectGrid || !config.projects) return;
+
   selectors.projectGrid.innerHTML = config.projects
     .map((item) => `
       <article class="project-card reveal">
@@ -48,20 +52,30 @@ function renderProjects() {
 }
 
 function renderNotes() {
+  if (!selectors.notesList || !config.notes) return;
+
   selectors.notesList.innerHTML = config.notes
-    .map((item) => `
-      <article class="note-item reveal">
-        <span>${escapeHtml(item.date)}</span>
-        <div>
-          <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.text)}</p>
-        </div>
-      </article>
-    `)
+    .map((item) => {
+      const title = item.href
+        ? `<a href="${escapeHtml(item.href)}">${escapeHtml(item.title)}</a>`
+        : escapeHtml(item.title);
+
+      return `
+        <article class="note-item reveal ${item.href ? "note-link-item" : ""}">
+          <span>${escapeHtml(item.date)}</span>
+          <div>
+            <h3>${title}</h3>
+            <p>${escapeHtml(item.text)}</p>
+          </div>
+        </article>
+      `;
+    })
     .join("");
 }
 
 function renderContacts() {
+  if (!selectors.contactLinks || !config.contact) return;
+
   selectors.contactLinks.innerHTML = config.contact
     .map((item) => `
       <a class="contact-link" href="${escapeHtml(item.href)}" rel="noreferrer">
@@ -96,6 +110,8 @@ function setupRevealAnimations() {
 }
 
 function setupNavigation() {
+  if (!selectors.navToggle || !selectors.navMenu) return;
+
   selectors.navToggle.addEventListener("click", () => {
     const isOpen = selectors.navToggle.getAttribute("aria-expanded") === "true";
     selectors.navToggle.setAttribute("aria-expanded", String(!isOpen));
@@ -116,6 +132,7 @@ function setupNavigation() {
 
 function setupTypingEffect() {
   const target = selectors.typedLine;
+  if (!target) return;
   const text = target.dataset.typed || "Cyber Security Analyst";
   let index = 0;
 

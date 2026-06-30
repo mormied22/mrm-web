@@ -120,3 +120,8 @@ Select-String -Path public\*.html,public\*.css,public\*.js -Pattern 'http://|htt
 ```
 
 For this site, unexpected external scripts, analytics, cookies, or remote fetches should be reviewed before pushing.
+
+
+## Adding write-ups
+
+Write-up pages live in `public/notes/`. Add a new HTML page there, then add a matching entry to the `notes` array in `public/content.js`. If the note has an `href`, the homepage note card becomes clickable.
