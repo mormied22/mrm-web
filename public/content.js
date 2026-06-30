@@ -6,26 +6,26 @@ window.siteConfig = {
   name: "mormied",
   title: "Cyber Security Analyst",
   contact: [
-    {
-      label: "GitHub",
-      href: "https://github.com/mormied22",
-      detail: "github.com/mormied22"
-    },
-    {
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/chase.morman",
-      detail: "linkedin.com/in/chase.morman"
-    },
-    {
-      label: "Email",
-      href: "mailto:mormied.tech@proton.me",
-      detail: "mormied.tech@proton.me"
-    },
-    {
-      label: "TryHackMe",
-      href: "https://tryhackme.com/p/chase.morman",
-      detail: "tryhackme.com/p/chase.morman"
-    }
+  {
+    label: "GitHub",
+    href: "https://github.com/mormied22",
+    detail: "github.com/mormied22"
+  },
+  {
+    label: "Discord Server",
+    href: "https://discord.mormied.com",
+    detail: "discord.mormied.com"
+  },
+  {
+    label: "Discord",
+    href: "https://discord.mormied.com",
+    detail: "@mormied"
+  },
+  {
+    label: "Email",
+    href: "mailto:mormied.tech@proton.me",
+    detail: "mormied.tech@proton.me"
+  }
   ],
   focusAreas: [
     {
@@ -81,21 +81,6 @@ window.siteConfig = {
       date: "Lab note",
       href: "/notes/intune-portal-debian-13.html",
       text: "An unsupported lab workaround for patching the Linux installer locally so Debian 13 is treated as Ubuntu 24.04 noble."
-    },
-    {
-      title: "Building a malware analysis workflow",
-      date: "Draft",
-      text: "Planned notes on repeatable triage, safe handling, snapshots, tooling, and reporting structure."
-    },
-    {
-      title: "Detection engineering checklist",
-      date: "Draft",
-      text: "A future checklist for writing detections that are understandable, testable, and useful to responders."
-    },
-    {
-      title: "Threat intelligence reading list",
-      date: "Draft",
-      text: "A curated set of sources, reports, and habits for keeping research structured and practical."
     }
   ]
 };
