@@ -86,42 +86,6 @@ Deploy command: npx wrangler deploy
 Root directory: /
 ```
 
-## Cloudflare Worker name
-
-The current Wrangler config uses:
-
-```json
-"name": "mrm-web"
-```
-
-This should match the Cloudflare Worker name shown in your dashboard. If you rename the Worker in Cloudflare, update `wrangler.json` to match.
-
-## Security notes
-
-This site is static and has no backend, database, login, or secrets.
-
-The repo should never contain:
-
-- `.env`
-- `.dev.vars`
-- Cloudflare API tokens
-- private keys
-- passwords
-- real secrets of any kind
-
-The `_headers` file adds baseline browser security headers, including a Content Security Policy that only allows scripts and styles from this site.
-
-## Before pushing AI-generated changes
-
-Check for unexpected network calls or risky JavaScript:
-
-```powershell
-Select-String -Path public\*.html,public\*.css,public\*.js -Pattern 'http://|https://|fetch\(|XMLHttpRequest|localStorage|sessionStorage|document.cookie|innerHTML|eval\(|Function\(' -CaseSensitive:$false
-```
-
-For this site, unexpected external scripts, analytics, cookies, or remote fetches should be reviewed before pushing.
-
-
 ## Adding write-ups
 
 Write-up pages live in `public/notes/`. Add a new HTML page there, then add a matching entry to the `notes` array in `public/content.js`. If the note has an `href`, the homepage note card becomes clickable.
